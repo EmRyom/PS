@@ -15,6 +15,7 @@ generate i (x:xs) = (space i) <> case x of
   Increment -> "Increment\n" <> generate i xs 
   Decrement -> "Decrement\n" <> generate i xs 
   Return -> "Return\n" <> generate i xs  
+  Enter -> "Enter\n" <> generate i xs
   Bracket a -> "Bracket Open\n" <> generate (i+2) a <> space i <> "Bracket Close\n" <> generate i xs 
 generate i Nil = ""
 

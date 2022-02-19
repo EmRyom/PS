@@ -36,6 +36,9 @@ statement = fix allStat
       , (do 
         token.reserved "."
         pure Return)
+      , (do 
+        token.reserved ","
+        pure Enter)
       , token.brackets (do 
         a <- many $ try statement
         pure $ Bracket a)

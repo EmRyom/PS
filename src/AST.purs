@@ -10,4 +10,5 @@ data Statement
   | Increment
   | Decrement
   | Return
+  | Enter 
   | Bracket (List Statement)

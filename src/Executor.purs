@@ -8,14 +8,17 @@ import Prelude
 
 
 type State = Tuple Int (List Int)
+type Input = String 
 
 limit :: Int
 limit = 15 --0 to 15, 16 memory records
 
 executor :: Program -> String 
 executor (P xs) = let mem = ((0 /\ initialMem limit):Nil) in
-  let result = execute xs mem in
-  show (length result) <> "\n" <> print result <> "\n" <> printASCII result
+  case execute xs mem of
+  (_:Nil) -> "No output"
+  (_:result) -> show (length result) <> "\n" <> print result <> printASCII result
+  Nil -> "No output"
 
 initialMem :: Int -> List Int
 initialMem 0 = Nil
@@ -27,13 +30,14 @@ execute _ m = m
 
 
 exec :: Statement -> List State -> List State
-exec s ((i /\ m):ms) = case s of 
+exec s ((i /\ m):ms) = let mem = ((i /\ m):ms) in case s of 
   Right -> if (i+1) > limit then ((0 /\ m):ms) else (((i+1) /\ m):ms)
   Left -> if (i-1) < 0 then ((limit /\ m):ms) else (((i-1) /\ m):ms)
   Increment -> ((i /\ modify true m i):ms) 
   Decrement -> ((i /\ modify false m i):ms)
-  Return -> ((i /\ m):((i /\ m):ms))
-  Bracket (xs) -> looped xs ((i /\ m):ms)
+  Return -> ((i /\ m):mem)
+  Enter -> mem
+  Bracket xs -> looped xs mem
 exec _ _ = Nil
 
 isZero :: State -> Boolean
@@ -59,6 +63,9 @@ modify b (m:ms) i =
     else ((m-1):ms) 
   else (m:modify b ms (i-1))  
 modify _ _ _ = Nil
+
+
+--inputModify :: String 
 
 
 
